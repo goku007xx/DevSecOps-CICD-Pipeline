@@ -15,18 +15,22 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Set up python
+        uses: actions/checkout@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Semgrep
+        run: pip install semgrep
 
       - name: Run Semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: auto
-          output: semgrep.sarif
-          sarif: true
+        run: semgrep --config auto --output semgrep.sarif --sarif .
 
-      - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
+      # - name: Upload SARIF to GitHub
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: semgrep.sarif
 
   # trivy:
   #   name: Trivy Scan
@@ -71,7 +75,7 @@ jobs:
         with:
           args: detect --source . --report-format sarif --report-path gitleaks.sarif --no-git
 
-      - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: gitleaks.sarif
+      # - name: Upload SARIF to GitHub
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: gitleaks.sarif
