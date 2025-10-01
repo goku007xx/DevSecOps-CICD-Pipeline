@@ -1,0 +1,16 @@
+{
+  "name": "devsecops-cicd-project",
+  "version": "0.1.0",
+  "description": "insecure ecommerce backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "4.16.0",
+    "body-parser": "1.18.3",
+    "jsonwebtoken": "7.4.1",
+    "md5": "2.2.1",
+    "mongodb": "2.2.36"
+  }
+}

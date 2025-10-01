@@ -1,0 +1,6 @@
+title = "gitleaks config"
+[[rules]]
+id = "aws-secret"
+description = "AWS Secret"
+regex = '''AKIA[0-9A-Z]{16}'''
+file = ".*"
