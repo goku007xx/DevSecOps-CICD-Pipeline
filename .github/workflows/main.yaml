@@ -15,17 +15,12 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up python
-        uses: actions/checkout@v4
-        with:
-          python-version: '3.x'
 
       - name: Install Semgrep
         run: pip install semgrep
 
       - name: Run Semgrep
-        run: semgrep --config auto --output semgrep.sarif --sarif .
+        run: semgrep --config auto --output semgrep.sarif --sarif --error .
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
@@ -73,7 +68,7 @@ jobs:
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
 
-      # - name: Upload SARIF to GitHub
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: gitleaks.sarif
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
