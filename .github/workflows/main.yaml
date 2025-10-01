@@ -73,7 +73,7 @@ jobs:
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         with:
-          args: detect --source . --report-format sarif --report-path gitleaks.sarif --no-git
+          args: detect --source . --no-git
 
       # - name: Upload SARIF to GitHub
       #   uses: github/codeql-action/upload-sarif@v3
