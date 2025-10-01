@@ -72,7 +72,7 @@ jobs:
         run: docker run -v $(pwd):/path ghcr.io/gitleaks/gitleaks:latest detect --source /path --report-format sarif --report-path gitleaks.sarif --no-git --exit-code 0
 
       - name: Custom command
-        run: pwd && ls -la
+        run: tree
       
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
