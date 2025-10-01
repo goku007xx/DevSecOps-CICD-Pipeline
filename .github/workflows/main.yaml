@@ -27,10 +27,10 @@ jobs:
       - name: Run Semgrep
         run: semgrep --config auto --output semgrep.sarif --sarif .
 
-      # - name: Upload SARIF to GitHub
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: semgrep.sarif
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
 
   # trivy:
   #   name: Trivy Scan
@@ -72,8 +72,6 @@ jobs:
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
-        with:
-          args: detect --source . --no-git
 
       # - name: Upload SARIF to GitHub
       #   uses: github/codeql-action/upload-sarif@v3
