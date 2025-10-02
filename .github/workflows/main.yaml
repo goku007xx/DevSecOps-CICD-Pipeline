@@ -22,39 +22,39 @@ jobs:
       - name: Run Semgrep
         run: semgrep --config auto --output semgrep.sarif --sarif .
 
-      - name: Upload SARIF to GitHub
+      - name: Upload Semgrep SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
 
-  # trivy:
-  #   name: Trivy Scan
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     security-events: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v4
+  trivy:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
 
-  #     # Build Docker image to scan
-  #     - name: Build Docker image
-  #       run: docker build -t insecure-ecom:latest .
+      # Build Docker image to scan
+      - name: Build Docker image
+        run: docker build -t insecure-ecom:latest .
 
-  #     - name: Run Trivy
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         scan-type: "image"
-  #         image-ref: "insecure-ecom:latest"
-  #         format: "sarif"
-  #         output: "trivy.sarif"
-  #         ignore-unfixed: true
-  #         severity: 'CRITICAL'
-  #         exit-code: "1" # fail on critical findings
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "image"
+          image-ref: "insecure-ecom:latest"
+          format: "sarif"
+          output: "trivy.sarif"
+          ignore-unfixed: true
+          severity: 'CRITICAL'
+          exit-code: "1" # fail on critical findings
 
-  #     - name: Upload SARIF to GitHub
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       with:
-  #         sarif_file: trivy.sarif
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy.sarif
 
   gitleaks:
     name: Gitleaks Secret Scan
@@ -70,11 +70,8 @@ jobs:
 
       - name: Run Gitleaks
         run: docker run -v $(pwd):/path ghcr.io/gitleaks/gitleaks:latest detect --source /path --report-format sarif --report-path /path/gitleaks.sarif --no-git --exit-code 0
-
-      - name: Custom command
-        run: tree
       
-      - name: Upload SARIF to GitHub
+      - name: Upload Gitleaks SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
