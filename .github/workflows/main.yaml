@@ -99,7 +99,9 @@ jobs:
       - name: Run Kyverno scan on manifests
         run: |
           mkdir reports
+          tree
           kyverno apply policies/ --resource manifests/ -o json > reports/kyverno.json
+          tree
           npx @microsoft/sarif-multitool convert --force --output reports/kyverno.sarif reports/kyverno.json
 
       - name: Upload Kyverno SARIF to GitHub
