@@ -7,6 +7,26 @@ on:
     branches: [ "main" ]
 
 jobs:
+  gitleaks:
+    name: Gitleaks Secret Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get gitleaks docker image
+        run: docker pull ghcr.io/gitleaks/gitleaks:latest
+
+      - name: Run Gitleaks
+        run: docker run -v $(pwd):/path ghcr.io/gitleaks/gitleaks:latest detect --source /path --report-format sarif --report-path /path/gitleaks.sarif --no-git --exit-code 0
+      
+      - name: Upload Gitleaks SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: gitleaks.sarif
+
   semgrep:
     name: Semgrep SAST
     runs-on: ubuntu-latest
@@ -36,7 +56,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Build Docker image to scan
       - name: Build Docker image
         run: docker build -t insecure-ecom:latest .
 
@@ -49,15 +68,15 @@ jobs:
           output: "trivy.sarif"
           ignore-unfixed: true
           severity: 'CRITICAL'
-          exit-code: "0" # fail on critical findings
+          exit-code: "0"
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy.sarif
 
-  gitleaks:
-    name: Gitleaks Secret Scan
+  kyverno:
+    name: Kyverno Policy Scan
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -65,13 +84,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get gitleaks docker image
-        run: docker pull ghcr.io/gitleaks/gitleaks:latest
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
 
-      - name: Run Gitleaks
-        run: docker run -v $(pwd):/path ghcr.io/gitleaks/gitleaks:latest detect --source /path --report-format sarif --report-path /path/gitleaks.sarif --no-git --exit-code 0
-      
-      - name: Upload Gitleaks SARIF to GitHub
+      - name: Check install
+        run: kyverno version
+
+      - name: Download Kyverno policies
+        run: |
+          mkdir policies
+          curl -L https://raw.githubusercontent.com/kyverno/policies/main/best-practices/disallow-latest-tag/disallow-latest-tag.yaml -o policies/disallow-latest-tag.yaml
+          curl -L https://raw.githubusercontent.com/kyverno/policies/main/best-practices/require-labels/require-labels.yaml -o policies/require-labels.yaml
+
+      - name: Run Kyverno scan on manifests
+        run: |
+          mkdir reports
+          kyverno apply policies/ --resource manifests/ -o json > reports/kyverno.json
+          npx @microsoft/sarif-multitool convert --force --output reports/kyverno.sarif reports/kyverno.json
+
+      - name: Upload Kyverno SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: gitleaks.sarif
+          sarif_file: reports/kyverno.sarif
