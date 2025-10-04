@@ -100,8 +100,9 @@ jobs:
         run: |
           mkdir reports
           tree
-          kyverno apply policies/ --resource k8s/deployment.yaml --resource k8s/secret.yaml --resource k8s/service.yaml -o json > reports/kyverno.json
-          
+          kyverno apply policies/ --resource k8s/deployment.yaml --resource k8s/secret.yaml --resource k8s/service.yaml
+          tree
+          npx @microsoft/sarif-multitool convert --force --output reports/kyverno.sarif reports/kyverno.json
 
       - name: Upload Kyverno SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
