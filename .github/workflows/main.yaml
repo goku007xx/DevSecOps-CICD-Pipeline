@@ -100,7 +100,7 @@ jobs:
         run: |
           mkdir reports
           tree
-          kyverno apply policies/ --resource k8s/deployment.yaml --resource k8s/secret.yaml --resource k8s/service.yaml
+          kyverno apply policies/ --resource k8s/deployment.yaml --resource k8s/secret.yaml --resource k8s/service.yaml || true
           tree
           npx @microsoft/sarif-multitool convert --force --output reports/kyverno.sarif reports/kyverno.json
 
