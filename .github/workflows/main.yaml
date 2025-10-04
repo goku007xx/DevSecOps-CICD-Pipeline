@@ -75,8 +75,8 @@ jobs:
         with:
           sarif_file: trivy.sarif
 
-  kyverno:
-    name: Kyverno Policy Scan
+  checkov:
+    name: Checkov IaC Scan
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -84,25 +84,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Kyverno CLI
-        uses: kyverno/action-install-cli@v0.2.0
+      - name: Install Checkov
+        run: pip install checkov
 
-      - name: Check install
-        run: kyverno version
-
-      - name: Download Kyverno policies
+      - name: Run Checkov Scan
         run: |
-          mkdir policies
-          curl -L https://raw.githubusercontent.com/kyverno/policies/main/best-practices/disallow-latest-tag/disallow-latest-tag.yaml -o policies/disallow-latest-tag.yaml
-          curl -L https://raw.githubusercontent.com/kyverno/policies/main/best-practices/require-labels/require-labels.yaml -o policies/require-labels.yaml
+          checkov -d terraform/ \
+            --framework terraform \
+            --output sarif \
+            --checkov-exit-code 0 \
+            --soft-fail \
+            --severity-level HIGH \
+            > checkov.sarif
 
-      - name: Run Kyverno scan on manifests
-        run: |
-          mkdir reports
-          kyverno apply policies/ --resource k8s/deployment.yaml --resource k8s/secret.yaml --resource k8s/service.yaml || true
-          npx @microsoft/sarif-multitool convert --output reports/kyverno.sarif reports/kyverno.json
-
-      - name: Upload Kyverno SARIF to GitHub
+      - name: Upload Checkov SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: reports/kyverno.sarif
+          sarif_file: checkov.sarif
