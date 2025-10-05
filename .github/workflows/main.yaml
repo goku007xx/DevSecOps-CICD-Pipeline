@@ -27,6 +27,12 @@ jobs:
         with:
           sarif_file: gitleaks.sarif
 
+      - name: Archive report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks.sarif
+
   semgrep:
     name: Semgrep SAST
     runs-on: ubuntu-latest
@@ -46,6 +52,12 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
+
+      - name: Archive report
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep.sarif
 
   trivy:
     name: Trivy Image Scan
@@ -75,6 +87,12 @@ jobs:
         with:
           sarif_file: trivy.sarif
 
+      - name: Archive report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy.sarif
+
   checkov:
     name: Checkov IaC Scan
     runs-on: ubuntu-latest
@@ -94,6 +112,12 @@ jobs:
             --output sarif \
             --soft-fail \
             > checkov.sarif
+
+      - name: Archive report
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-report
+          path: checkov.sarif
 
       # Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub.
       # - name: Upload Checkov SARIF to GitHub
