@@ -48,7 +48,7 @@ jobs:
           sarif_file: semgrep.sarif
 
   trivy:
-    name: Trivy Scan
+    name: Trivy Image Scan
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -95,7 +95,7 @@ jobs:
             --soft-fail \
             > checkov.sarif
 
-      # TODO: Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub
+      # Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub.
       # - name: Upload Checkov SARIF to GitHub
       #   uses: github/codeql-action/upload-sarif@v3
       #   with:
