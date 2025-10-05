@@ -110,17 +110,16 @@ jobs:
           checkov -d terraform \
             --framework terraform \
             --output sarif \
-            --soft-fail \
-            > checkov.sarif
+            --soft-fail
 
       - name: Archive report
         uses: actions/upload-artifact@v4
         with:
           name: checkov-report
-          path: checkov.sarif
+          path: results.sarif
 
-      # Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub.
-      # - name: Upload Checkov SARIF to GitHub
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: checkov.sarif
+      Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub.
+      - name: Upload Checkov SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov.sarif
