@@ -95,7 +95,8 @@ jobs:
             --soft-fail \
             > checkov.sarif
 
-      - name: Upload Checkov SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: checkov.sarif
+      # TODO: Checkov's SARIF is invalid. Uncomment when we have a way to upload SARIF to GitHub
+      # - name: Upload Checkov SARIF to GitHub
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: checkov.sarif
