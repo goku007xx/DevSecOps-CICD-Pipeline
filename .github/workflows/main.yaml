@@ -89,12 +89,11 @@ jobs:
 
       - name: Run Checkov Scan
         run: |
-          checkov -d terraform/ \
+          checkov -d terraform \
             --framework terraform \
             --output sarif \
-            --checkov-exit-code 0 \
             --soft-fail \
-            --severity-level HIGH \
+            --check HIGH \
             > checkov.sarif
 
       - name: Upload Checkov SARIF to GitHub
