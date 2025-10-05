@@ -93,7 +93,6 @@ jobs:
             --framework terraform \
             --output sarif \
             --soft-fail \
-            --check HIGH \
             > checkov.sarif
 
       - name: Upload Checkov SARIF to GitHub
