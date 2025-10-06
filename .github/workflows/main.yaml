@@ -71,17 +71,19 @@ jobs:
       - name: Build Docker image
         run: docker build -t insecure-ecom:latest .
 
-      - name: Run Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: "image"
-          image-ref: "insecure-ecom:latest"
-          format: "sarif"
-          output: "trivy.sarif"
-          ignore-unfixed: true
-          severity: 'HIGH'
-          exit-code: "0"
-          cache: 'false'
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+          trivy --version
+
+      - name: Run Trivy scan on image
+        run: |
+          trivy image \
+            --format sarif \
+            --output trivy.sarif \
+            --severity HIGH \
+            --ignore-unfixed \
+            insecure-ecom:latest || true
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
