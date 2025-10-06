@@ -81,6 +81,7 @@ jobs:
           ignore-unfixed: true
           severity: 'HIGH'
           exit-code: "0"
+          cache: 'false'
 
       - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
