@@ -79,7 +79,7 @@ jobs:
           format: "sarif"
           output: "trivy.sarif"
           ignore-unfixed: true
-          severity: 'CRITICAL'
+          severity: 'HIGH'
           exit-code: "0"
 
       - name: Upload SARIF to GitHub
