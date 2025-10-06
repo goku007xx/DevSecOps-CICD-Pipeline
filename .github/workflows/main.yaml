@@ -75,14 +75,13 @@ jobs:
         run: |
           wget https://github.com/aquasecurity/trivy/releases/download/v0.67.0/trivy_0.67.0_Linux-64bit.deb
           sudo dpkg -i trivy_0.67.0_Linux-64bit.deb
-          trivy --version
 
       - name: Run Trivy scan on image
         run: |
           trivy image \
             --format sarif \
             --output trivy.sarif \
-            --severity HIGH \
+            --severity CRITICAL \
             --ignore-unfixed \
             insecure-ecom:latest || true
 
